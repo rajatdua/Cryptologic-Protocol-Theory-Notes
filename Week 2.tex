@@ -34,7 +34,8 @@
 \usetikzlibrary{calc}
 \usepackage{multirow}
 \usepackage{outlines}
-
+% \usepackage[table,xcdraw]{xcolor}
+\usepackage{colortbl}
 
 
 \title{\emph{Cryptologic Protocol Theory}}
@@ -280,16 +281,125 @@ $m'$ is still too much information. So, we can use commitment ($\gamma$) to tack
     \item Zero Knowledge
 \end{itemize}
 
-\section{Interactive Proof System}
+\section{Interactive Proof System}\label{week2-interactive-proof-system}
 
-Let's define it more formally. For that we call the interaction between prover and verifier as conversation which happens in a language. The goal is that prover is trying to prove to verifier an $x$ where the verifier either accepts or rejects it.
+Let's define it more formally. For that, we call the interaction between prover and verifier as conversation which happens in a language. The goal is that prover is trying to prove to verifier an $x$ where the verifier either accepts or rejects it.
 
 $$ P \rightarrow x \in \{0,1\}^* $$
 $$ V \rightarrow x \in^{?} L \subset \{0,1\}^* $$
 
-Language can be defined as palindrome, English but in this course, we will use \textbf{Graphs}. Mainly, isomorphic graphs defined as follows:
+Language can be defined as palindrome, English but in this course, we will use \textbf{Graphs}. Mainly, isomorphic graphs are defined as follows:
 
 $$L_{iso} = \{G_0, G_1 | \exists \text{ permutation } \pi \text{ such that } \pi(G_0) = G_1\}$$
+
+$P, V, P*$ are turning machines ($P*$ is a cheating prover). We can say $(P,V)$ is an interactive proof system for $L$ if it provides following properties:
+
+\begin{enumerate}
+    \item (Efficiency) V is PPT
+    \item (Completeness): If $x \in L, P_r[(P,V) \text{ rejects } x] = negl(|x|)$
+    \item (Soundness): If $x \notin L, \forall P*, P_r[(P*,V) \text{ accepts } x] = negl(|x|)$
+\end{enumerate}
+
+Note: We don't want $P*$ to be PPT because $P*$ has infinite power and is trying to break this system. So, it makes this soundness definition more strong instead of saying a PPT $P$.
+
+\subsection{Isomorphic Graphs}
+A permutation on a graph means you can change the index of the vertex but not the direction of it. For example, let's create a graph between ($0, 1, \ldots, n$).
+
+\begin{figure}[h]
+    \centering
+    
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+
+% Text Node
+\draw (178,59) node [anchor=north west][inner sep=0.75pt]  [font=\Large] [align=left] {$\displaystyle 0$};
+% Text Node
+\draw (390,61) node [anchor=north west][inner sep=0.75pt]  [font=\Large] [align=left] {$\displaystyle 1$};
+% Text Node
+\draw (260,178) node [anchor=north west][inner sep=0.75pt]  [font=\Large] [align=left] {$\displaystyle n$};
+% Connection
+\draw    (195,73.09) -- (385,74.89) ;
+\draw [shift={(387,74.91)}, rotate = 180.54] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+\draw    (387,84.07) -- (280.48,180.68) ;
+\draw [shift={(279,182.02)}, rotate = 317.79] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+\end{tikzpicture}
+\end{figure}
+
+So, a table for vertexes can be represented as:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Vertexes}} &
+  \multicolumn{1}{c|}{\textbf{0}} &
+  \multicolumn{1}{c|}{\textbf{1}} &
+  \ldots &
+  \multicolumn{1}{c|}{\textbf{n}} \\ \hline
+\textbf{0} & \cellcolor[HTML]{C0C0C0} & \cellcolor[HTML]{C0C0C0} & \cellcolor[HTML]{FFCCC9} & \cellcolor[HTML]{C0C0C0} \\ \hline
+\textbf{1} &
+  1 &
+  \cellcolor[HTML]{C0C0C0} &
+  \cellcolor[HTML]{FFCCC9}{\color[HTML]{C0C0C0} } &
+  \cellcolor[HTML]{C0C0C0}{\color[HTML]{C0C0C0} } \\ \hline
+\vdots      & \cellcolor[HTML]{FFCCC9} & \cellcolor[HTML]{FFCCC9} & \cellcolor[HTML]{FFCCC9} & \cellcolor[HTML]{FFCCC9} \\ \hline
+\textbf{n} & 0                        & 1                        & \cellcolor[HTML]{FFCCC9} & \cellcolor[HTML]{C0C0C0} \\ \hline
+\end{tabular}
+\end{table}
+
+If one has to implement premutation, the max they can do is switch the labels of $0$ and $1$ but the edge remains in the same place.
+
+\section{Interactive Argument System}
+
+The same thing as above holds, however, there is an extra security feature with Prover ($P$) called a witness ($w$). Now, we need to satisfy the same conditions as above - 
+
+\begin{enumerate}
+    \item (Efficiency) $P,V$ are PPT
+    \item (Completeness): If $x \in L, \exists \: w, P_r[(P(w),V) \text{ rejects } x] = negl(|x|)$
+    \item (Soundness): If $x \notin L, \forall \text{ PPT } P*, P_r[(P*,V) \text{ accepts } x] = negl(|x|)$
+\end{enumerate}
+
+\section{Interactive Zero Knowledge Proof}
+
+Let's call a conversation between an actual prover ($P$) and verifier ($V$) as $\mathcal{T}_{R}$ called "Real Transcript". We want to build a simulator that will try to mimic this real conversation however this simulator ($S$) doesn't have access to infinite power or access to the witness ($w$). Let's call the conversation for the simulator as $\mathcal{T}_{S}$ which is called "Simulated Transcript".
+
+The proof says that $$\mathcal{T}_{S} \thicksim \mathcal{T}_{R}$$
+
+Now, $\thicksim$ is indistinguishable. This holds for all: Unconditional, Statistical and Computational.
+
+So, if the simulator doesn't have access to the above things, how can they try to simulate a real transcript? \textbf{Reason}: maybe the simulator can change the order in such a way that they can use the second message first which can provide "more" advantage.
+
+\subsection{Formal Definition - Honest Verifier}
+
+It states that $\exists$ PPT $S$ such that $\forall \: x \in L, \mathcal{T}_{R} \thicksim \mathcal{T}_{S} = S(x)$
+
+However, this isn't strong enough since a verifier can be dishonest.
+
+\subsection{Formal Definition - All Verifier}
+
+It states that $\forall$ PPT $V*, \exists \: S_{V*} | \forall \: x \in L, \mathcal{T}_{R} \thicksim \mathcal{T}_{S_{V*}}$
+
+Here the $\mathcal{T}_{R}$ can either be the actual conversation or a corrupted one. It is not the same $\mathcal{T}_{R}$ as an honest verifier since we are working with "all" kinds of verifiers.
+
+\subsection{Isomorphic Graphs (Cont.)}
+
+There is a conversation between a prover and a verifier. Where $x = (G_0, G_1)$, where these groups are isomorphic in the same class. Prover selects a witness ($w = \pi$) such that $\pi$ acts like a medium that satisfies the condition $G_1 = \pi(G_0)$. Note: $\pi$ is a permutation. You can go through the main section where isomorphic definition was mentioned here (\ref{week2-interactive-proof-system}).
+
+The conundrum is that you cannot find $\pi$ for $(G_0, G_1)$ there is not algorithm for it. So, $V$ cannot compute it in PPT. 
+
+\section{Approaches for ZKP}
+
+\begin{enumerate}
+    \item Commit $b$, do not open until $V$ proves knowledge of what you will open to. [Maybe if $V$ tells you the commit $b$ [Not sure]]
+    \item Divide $w$ into two parts, such that both together can reveal $w$. However, each alone does not tell you about anything. Moreover, it needs to be "verifiable". [We do not know how to break $w$ yet]
+\end{enumerate}
+
 
 % \bibliographystyle{unsrtnat}
 % \bibliography{references}

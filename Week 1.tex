@@ -503,7 +503,7 @@ $\mathbf{CheckParams}(pp)$: Check that $f$ is a one-way homomorphism of the expe
 
 
 \subsubsection{Homomorphism}
-There are certain requirements for the $f$ function to be homomorphic. Which are as follows:
+There are certain requirements for the $f$ function to be homomorphic. These are as follows:
 
 \begin{enumerate}
     \item $f$ must be one-way - meaning, there shouldn't be any pre-image of it. It should be hard to find $x$ if you are give $g^x$
@@ -674,7 +674,7 @@ An oracle gives us an $h$ and we $\oplus$ it with a uniform value. If the advers
 
 \subsection{Naor-Yung}
 
-This uses the concept of CRH (collision resistant hashing). Which means that it is hard to find a function ($H$) that has a collision.
+This uses the concept of CRH (collision-resistant hashing). This means that it is hard to find a function ($H$) that has a collision.
 
 $$
 H(x_0) = H(x_1) | x_0 \neq x_1
@@ -707,12 +707,14 @@ We give this adversary $A$, the $H$ hash function. It produces two pairs $r_0, x
     c_1 = (h(x_1), r_1, (r_1 \cdot x_1) \oplus 1)
 \end{align*}
 
-Since, $r$ appears entirely in the commitment then it means that $r_0 = r_1$ which is non-negotiable. We also know that $H(x_0) = H(x_1)$ under assumption. What about $r_0 \cdot x_0 = r_1 \cdot x_1$? No. Then if $r_0 \cdot x_0 \neq r_1 \cdot x_1$ then $x_0 \neq x_1$ which means that there is a collision.
+Since $r$ appears entirely in the commitment then it means that $r_0 = r_1$ which is non-negotiable. We also know that $H(x_0) = H(x_1)$ under assumption. What about $r_0 \cdot x_0 = r_1 \cdot x_1$? No. Then if $r_0 \cdot x_0 \neq r_1 \cdot x_1$ then $x_0 \neq x_1$ means that there is a collision.
 
 
-\textbf{"Since, $r$ appears entirely in the commitment then it means that $r_0 = r_1$?"}: This statement is referring to the fact that the same random value $r$ is used in both commitments $c_0$ and $c_1$. In the Naor-Yung scheme, the same $r$ value is used to create both commitments. Therefore, if an adversary is able to produce two valid commitments, they must have used the same $r$ value in both, hence $r_0 = r_1$.
+\textbf{"Since, $r$ appears entirely in the commitment then it means that $r_0 = r_1$?"}: This statement refers to the fact that the same random value $r$ is used in both commitments $c_0$ and $c_1$. In the Naor-Yung scheme, the same $r$ value is used to create both commitments. Therefore, if an adversary can produce two valid commitments, they must have used the same $r$ value in both, hence $r_0 = r_1$.
 
 \textbf{"What about $r_0 \cdot x_0 = r_1 \cdot x_1$? No"} This statement is saying that even though $r_0 = r_1$, it does not necessarily mean that $r_0 \cdot x_0 = r_1 \cdot x_1$. This is because $x_0$ and $x_1$ are different values (as per the assumption that $H(x_0) = H(x_1)$ but $x_0 \neq x_1$). Therefore, even if the same $r$ value is used, the results of $r_0 \cdot x_0$ and $r_1 \cdot x_1$ would be different unless $x_0 = x_1$, which contradicts our assumption. Hence, $r_0 \cdot x_0 \neq r_1 \cdot x_1$.
+
+The adversary has to output $(r_0,x_0)$, $(r_1,x_1)$ such that $(h(x_0),r_0,(r_0 \cdot x_0)) = (h(x_1),r_1,(r_1 \cdot x_1))$.
    
 \subsubsection{Proving Statistical Hiding}
 
